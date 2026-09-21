@@ -7,6 +7,13 @@
   gap: 1.5rem;
   border-radius: 3rem;
 
+  &__errors {
+    color: $error;
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 12rem;
+  }
+
   &__label {
     flex-grow: 1;
   }

@@ -5,21 +5,24 @@
   @include mixins.flex(column);
   gap: 2rem;
   height: 60vh;
+  max-height: calc(90dvh - 7rem);
+  min-height: 0;
 
   &__list {
     padding: 0 2rem 0 0;
     margin: 0;
     flex-grow: 1;
     overflow-y: auto;
+    min-height: 0;
+    overscroll-behavior: contain;
   }
   
-  &__list:not(:has(> *))::before {
-    content: 'Корзина пуста';
+  &__empty {
     opacity: 0.3;
     display: block;
     text-align: left;
-    font-style: regular;
     font-weight: 400;
+    list-style: none;
   }
 
   &__item {
@@ -37,6 +40,7 @@
       background-color: $primary;
       color: white;
       margin-right: 1rem;
+      flex-shrink: 0;
     }
 
     &-delete {
@@ -44,6 +48,7 @@
       @include mixins.link($hover, white);
       opacity: 0.5;
       margin-left: 4rem;
+      flex-shrink: 0;
     }
   }
 }

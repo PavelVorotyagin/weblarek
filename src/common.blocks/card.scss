@@ -14,6 +14,16 @@
     flex-direction: row;
     background-color: transparent;
     align-items: center;
+    gap: 2rem;
+    padding: 0;
+
+    .card__image {
+      width: 40%;
+      height: auto;
+      max-height: 55dvh;
+      margin: 0;
+      object-fit: contain;
+    }
 
     .card__title {
       flex-grow: 0;
@@ -34,7 +44,9 @@
   &__column {
     @include mixins.flex(column);
     align-items: flex-start;
-    height: 390px;
+    min-height: min(390px, 55dvh);
+    min-width: 0;
+    flex: 1;
   }
 
   &__row {
@@ -44,9 +56,10 @@
   }
 
   &__image {
-    height: 390px;
+    width: min(390px, 100%);
+    height: auto;
     aspect-ratio: 1;
-    margin: 3.75rem;
+    margin: 3.75rem 0;
     align-self: center;
   }
   &__title {
@@ -54,6 +67,7 @@
     font-weight: 500;
     margin: 0;
     flex-grow: 1;
+    overflow-wrap: anywhere;
   }
   &__text {
     text-align: left;

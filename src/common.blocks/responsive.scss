@@ -1,0 +1,178 @@
+:focus-visible {
+  outline: 2px solid #83fa9d;
+  outline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  html, body.page {
+    font-size: 16px;
+  }
+
+  .header {
+    height: auto;
+  }
+
+  .header__container {
+    padding: 1.5rem;
+  }
+
+  .header__logo {
+    height: 3rem;
+  }
+
+  .gallery {
+    padding: 1.5rem;
+  }
+
+  .card__title {
+    font-size: 1.8rem;
+  }
+
+  .card__row {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .card_compact .card__title {
+    font-size: 1.1rem;
+  }
+
+  .basket__item-delete {
+    margin-left: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .header__logo {
+    height: 2.5rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+    border-radius: 2rem;
+  }
+
+  .card__image {
+    margin: 2rem 0;
+  }
+
+  .modal__container {
+    padding: 3.5rem 1.25rem 1.5rem;
+    border-radius: 2rem;
+  }
+
+  .card_full {
+    flex-direction: column;
+    padding: 0;
+    gap: 0.75rem;
+  }
+
+  .card_full .card__image {
+    height: min(22dvh, 170px);
+    width: auto;
+    max-width: 100%;
+  }
+
+  .card__column {
+    min-height: 0;
+    width: 100%;
+  }
+
+  .card__text {
+    margin: 0.75rem 0;
+  }
+
+  .card_full .card__title {
+    font-size: 1.4rem;
+  }
+
+  .card__category {
+    padding: 0.35rem 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card__row, .modal__actions {
+    gap: 1rem;
+  }
+
+  .order {
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .order__buttons {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .button {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
+  .basket__list {
+    padding-right: 0;
+  }
+
+  .card_compact {
+    padding: 1rem 0;
+    border-radius: 0;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) 2rem;
+    gap: 0.5rem;
+  }
+
+  .basket__item-index {
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .card_compact .card__price {
+    grid-column: 2;
+    font-size: 0.9rem;
+  }
+
+  .basket__item-delete {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    margin-left: 0;
+  }
+}
+
+@media (max-height: 600px) {
+  .modal__container {
+    padding-top: 2.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .order, .order__field {
+    gap: 0.75rem;
+  }
+
+  .order {
+    margin-bottom: 0;
+  }
+
+  .form {
+    gap: 0.75rem;
+  }
+
+  .form__input {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .card__column {
+    min-height: 0;
+  }
+
+  .card_full .card__title {
+    font-size: 1.25rem;
+  }
+
+  .card_full .card__text {
+    font-size: 0.9rem;
+  }
+}
