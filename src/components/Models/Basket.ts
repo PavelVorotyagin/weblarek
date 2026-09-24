@@ -1,17 +1,13 @@
-import type { IBasketModel, IProduct } from '../../types';
+import type { IProduct } from '../../types';
 
-export class Basket implements IBasketModel {
+export class Basket {
     protected items: IProduct[] = [];
 
     getItems(): IProduct[] {
-        return [...this.items];
+        return this.items;
     }
 
     addItem(product: IProduct): void {
-        if (product.price === null || this.hasItem(product.id)) {
-            return;
-        }
-
         this.items.push(product);
     }
 

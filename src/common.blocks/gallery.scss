@@ -3,12 +3,7 @@
 
 .gallery {
   @include mixins.container;
-  @include mixins.grid(min(100%, 520px), 24px);
-
-  &__status {
-    grid-column: 1 / -1;
-    padding: 2rem 0;
-  }
+  @include mixins.grid(600px, 24px);
 
   &__item {
     border: none;

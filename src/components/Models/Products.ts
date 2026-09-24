@@ -1,22 +1,22 @@
-import type { IProduct, IProductsModel } from '../../types';
+import type { IProduct } from '../../types';
 
-export class Products implements IProductsModel {
+export class Products {
     protected items: IProduct[] = [];
     protected selectedProduct: IProduct | null = null;
 
     setItems(items: IProduct[]): void {
-        this.items = [...items];
+        this.items = items;
     }
 
     getItems(): IProduct[] {
-        return [...this.items];
+        return this.items;
     }
 
     getItem(id: string): IProduct | undefined {
         return this.items.find((item) => item.id === id);
     }
 
-    setSelectedProduct(product: IProduct | null): void {
+    setSelectedProduct(product: IProduct): void {
         this.selectedProduct = product;
     }
 

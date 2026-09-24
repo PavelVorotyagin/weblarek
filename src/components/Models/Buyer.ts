@@ -1,6 +1,6 @@
-import type { IBuyer, IBuyerModel, TBuyerErrors, TPayment } from '../../types';
+import type { IBuyer, TBuyerErrors, TPayment } from '../../types';
 
-export class Buyer implements IBuyerModel {
+export class Buyer {
     protected payment: TPayment = '';
     protected email = '';
     protected phone = '';
@@ -32,16 +32,16 @@ export class Buyer implements IBuyerModel {
     validate(): TBuyerErrors {
         const errors: TBuyerErrors = {};
 
-        if (this.payment !== 'card' && this.payment !== 'cash') {
+        if (!this.payment) {
             errors.payment = 'Выберите способ оплаты';
         }
-        if (!this.address.trim()) {
+        if (!this.address) {
             errors.address = 'Укажите адрес доставки';
         }
-        if (!this.email.trim()) {
+        if (!this.email) {
             errors.email = 'Укажите электронную почту';
         }
-        if (!this.phone.trim()) {
+        if (!this.phone) {
             errors.phone = 'Укажите телефон';
         }
 

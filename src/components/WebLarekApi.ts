@@ -1,6 +1,6 @@
-import type { IApi, IOrder, IOrderResponse, IProductsResponse, IWebLarekApi } from '../types';
+import type { IApi, IOrder, IOrderResponse, IProductsResponse } from '../types';
 
-export class WebLarekApi implements IWebLarekApi {
+export class WebLarekApi {
     protected api: IApi;
 
     constructor(api: IApi) {

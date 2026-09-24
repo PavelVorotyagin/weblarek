@@ -11,7 +11,6 @@
   padding-top: 5vh;
   padding-bottom: 5vh;
   box-sizing: border-box;
-  overflow: hidden;
 
   &_active {
     display: flex;
@@ -26,15 +25,10 @@
     border-radius: 3rem;
     box-sizing: border-box;
     position: relative;
-    max-height: 90dvh;
-    width: calc(100% - 2rem);
-    overflow: hidden;
-    padding-top: 4rem;
   }
 
   &__content {
     flex-grow: 1;
-    min-height: 0;
   }
 
   &__title {
@@ -47,7 +41,6 @@
     @include mixins.flex(row);
     align-items: center;
     gap: 2rem;
-    flex-wrap: wrap;
   }
 
   &__close {

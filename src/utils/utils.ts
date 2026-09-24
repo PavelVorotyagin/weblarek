@@ -2,11 +2,11 @@ export function pascalToKebab(value: string): string {
     return value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
-export function isSelector(x: unknown): x is string {
+export function isSelector(x: any): x is string {
     return (typeof x === "string") && x.length > 1;
 }
 
-export function isEmpty(value: unknown): boolean {
+export function isEmpty(value: any): boolean {
     return value === null || value === undefined;
 }
 
@@ -96,7 +96,6 @@ export function getElementData<T extends Record<string, unknown>>(el: HTMLElemen
  * Проверка на простой объект
  */
 export function isPlainObject(obj: unknown): obj is object {
-    if (typeof obj !== 'object' || obj === null) return false;
     const prototype = Object.getPrototypeOf(obj);
     return  prototype === Object.getPrototypeOf({}) ||
         prototype === null;
@@ -125,7 +124,8 @@ export function createElement<
             if (isPlainObject(value) && key === 'dataset') {
                 setElementData(element, value);
             } else {
-                Object.assign(element, { [key]: isBoolean(value) ? value : String(value) });
+                // @ts-expect-error fix indexing later
+                element[key] = isBoolean(value) ? value : String(value);
             }
         }
     }
