@@ -225,6 +225,8 @@ VITE_API_ORIGIN=https://larek-api.nomoreparties.co
 
 Классы находятся в src/components/View. Каждый класс отвечает за свой блок HTML. DOM-элементы ищутся в конструкторе и сохраняются в protected-полях, обработчики устанавливаются один раз. Данные товаров и покупателя в представлениях не сохраняются. Общий render(data?: Partial&lt;T&gt;): HTMLElement наследуется от Component и без аргументов возвращает элемент компонента. Сеттеры только обновляют разметку и ничего не возвращают.
 
+Header, BasketView, Modal, PreviewCard, Form и Success сохраняют переданный брокер в поле protected events: IEvents и вызывают this.events.emit(). OrderForm и ContactsForm получают это поле от Form. CatalogCard и BasketCard используют переданный обработчик нажатия.
+
 Типы представлений добавляются в src/types/index.ts:
 
 - ICatalogView: items: HTMLElement[] - карточки каталога.
@@ -250,17 +252,17 @@ Header
 
 Card
 
-Абстрактный общий родитель трёх карточек, наследует Component. Параметр типа T расширяет Pick&lt;IProduct, 'title' | 'price'&gt;. Конструктор protected constructor(container: HTMLElement). Поля titleElement: HTMLElement, priceElement: HTMLElement, categoryElement: HTMLElement | null, imageElement: HTMLImageElement | null хранят элементы карточки. В строке корзины категории и картинки нет.
+Абстрактный общий родитель трёх карточек, наследует Component. Параметр типа T расширяет Pick&lt;IProduct, 'title' | 'price'&gt;. Конструктор protected constructor(container: HTMLElement). Поля titleElement: HTMLElement и priceElement: HTMLElement хранят название и цену, которые есть во всех трёх карточках.
 
-Сеттеры title: string, price: number | null, category: string, image: string обновляют название, цену, категорию и картинку. Для категории используется categoryMap. При цене null выводится «Бесценно». Полный адрес картинки подготавливает презентер.
+Сеттеры title: string и price: number | null обновляют название и цену. При цене null выводится «Бесценно».
 
 CatalogCard
 
-Наследует Card. Конструктор constructor(container: HTMLElement, onClick: () =&gt; void) принимает карточку и обработчик нажатия, созданный брокером событий. Новых полей и методов нет. Нажатие вызывает переданный обработчик выбора товара.
+Наследует Card. Конструктор constructor(container: HTMLElement, onClick: () =&gt; void) принимает карточку и обработчик нажатия, созданный брокером событий. Поля categoryElement: HTMLElement и imageElement: HTMLImageElement находятся через ensureElement. Сеттер title: string обновляет название через родителя и альтернативный текст картинки; category: string применяет categoryMap; image: string устанавливает переданный полный адрес изображения. Нажатие вызывает переданный обработчик выбора товара.
 
 PreviewCard
 
-Наследует Card. Конструктор constructor(container: HTMLElement, events: IEvents). Поля descriptionElement: HTMLElement и button: HTMLButtonElement хранят описание и кнопку. Сеттеры description: string, buttonText: string, disabled: boolean обновляют разметку. Текст и доступность кнопки определяет презентер. Нажатие отправляет product:toggle.
+Наследует Card. Конструктор constructor(container: HTMLElement, events: IEvents). Поля categoryElement: HTMLElement, imageElement: HTMLImageElement, descriptionElement: HTMLElement и button: HTMLButtonElement находятся через ensureElement и хранят категорию, картинку, описание и кнопку. Сеттеры title: string, category: string и image: string работают так же, как в CatalogCard. Полный адрес картинки подготавливает презентер. Сеттеры description: string, buttonText: string, disabled: boolean обновляют описание и кнопку. Текст и доступность кнопки определяет презентер. Нажатие отправляет product:toggle.
 
 BasketCard
 
@@ -268,7 +270,7 @@ BasketCard
 
 BasketView
 
-Конструктор constructor(container: HTMLElement, events: IEvents). Поля list: HTMLElement, totalElement: HTMLElement, button: HTMLButtonElement, emptyElement: HTMLLIElement хранят список, сумму, кнопку и сообщение пустой корзины. Сообщение создаётся один раз в конструкторе. Сеттеры items: HTMLElement[], total: number, disabled: boolean обновляют содержимое. Кнопка отправляет order:open. При пустом массиве вместо строк показано «Корзина пуста».
+Конструктор constructor(container: HTMLElement, events: IEvents). Поля list: HTMLElement, totalElement: HTMLElement и button: HTMLButtonElement хранят список, сумму и кнопку. Сеттер items: HTMLElement[] заменяет дочерние элементы списка переданными строками. Сеттеры total: number и disabled: boolean обновляют сумму и кнопку оформления. Кнопка отправляет order:open. При пустом списке надпись «Корзина пуста» показывает правило из basket.scss, отдельного HTML-элемента для неё нет.
 
 Modal
 
@@ -316,22 +318,22 @@ Success
 
 Презентер
 
-Код находится в main.ts, отдельного класса нет. Сначала создаются брокер, модели, API и компоненты, затем регистрируются обработчики. Последним выполняется запрос каталога и сохранение ответа в Products.
+Код находится в main.ts, отдельного класса нет. Все экземпляры сохраняются в переменные, включая api: Api, который передаётся в WebLarekApi. После создания объектов регистрируются обработчики, затем вызываются basketModel.clear() и buyerModel.clear(). События моделей задают начальное состояние шапки, корзины и форм. После этого выполняется запрос каталога и сохранение ответа в Products. Переменных состояния в презентере нет.
 
 Вспомогательные функции презентера:
 
 - getOrderState(): IOrderFormView - получает из модели оплату, адрес и ошибки первого шага.
 - getContactsState(): IContactsFormView - получает контакты и ошибки второго шага.
-- renderBasket(): HTMLElement - создаёт строки по данным модели и возвращает разметку корзины. Вызывается при изменении корзины или её открытии.
+- renderBasket(): HTMLElement - создаёт строки по данным модели и возвращает разметку корзины. Вызывается только в обработчике basket:changed.
 - openModal(content: HTMLElement): void - передаёт содержимое в Modal и открывает окно.
 
 - products:changed получает каталог из модели, создаёт карточки и передаёт их в Catalog.
 - product:select находит товар по id и сохраняет его как выбранный. product:changed получает этот товар, подготавливает кнопку и открывает просмотр.
-- product:toggle проверяет цену и наличие товара в корзине, вызывает addItem или removeItem и закрывает окно.
+- product:toggle получает выбранный товар, проверяет его наличие в корзине, вызывает addItem или removeItem и закрывает окно. Для товара без цены кнопка заранее отключается в product:changed.
 - basket:remove вызывает removeItem. basket:changed обновляет строки, сумму, доступность оформления и счётчик.
-- basket:open показывает текущее содержимое корзины. order:open при непустой корзине открывает первый шаг, order:next проверяет его и открывает контакты.
+- basket:open передаёт в окно basket.render() без пересоздания строк. order:open и order:next открывают формы через render() без аргументов. Доступность кнопок определяется в обработчиках событий моделей, повторных проверок после нажатий нет.
 - buyer:change сохраняет данные через setData. buyer:changed получает данные и ошибки из Buyer и передаёт каждой форме только нужные поля и ошибки.
-- order:submit проверяет заполнение и корзину, собирает IOrder и вызывает API. Повторная отправка блокируется флагом isSubmitting: boolean в презентере. При успехе clear очищает корзину и покупателя, затем открывается Success. При ошибке данные остаются, форма контактов открывается с сообщением.
+- order:submit собирает IOrder из моделей и вызывает API. При сборке поле payment приводится к IOrder['payment'], так как к моменту доступной отправки оплата уже выбрана. При успехе clear очищает корзину и покупателя, затем открывается Success с суммой ответа сервера. При ошибке данные остаются, форма контактов открывается с сообщением без повторного заполнения полей.
 - modal:close и success:close закрывают окно.
 
-Представления обновляются при событиях изменения моделей или при открытии окна. Презентер не вызывает emit. Для карточек брокер создаёт обработчики через trigger; эти функции передаются в конструкторы и вызываются только по нажатию пользователя. Тестовые вызовы моделей и выводы в консоль из первой части удалены.
+Каталог, корзина, данные форм и доступность кнопок обновляются в обработчиках событий моделей. При открытии корзины и форм используется готовая разметка. Результат заказа и сообщение об ошибке передаются при открытии соответствующего окна. Презентер не вызывает emit. Для карточек брокер создаёт обработчики через trigger; эти функции передаются в конструкторы и вызываются только по нажатию пользователя. Тестовые вызовы моделей и выводы в консоль из первой части удалены.

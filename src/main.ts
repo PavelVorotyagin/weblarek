@@ -24,7 +24,8 @@ const events = new EventEmitter();
 const productsModel = new Products(events);
 const basketModel = new Basket(events);
 const buyerModel = new Buyer(events);
-const webLarekApi = new WebLarekApi(new Api(API_URL));
+const api = new Api(API_URL);
+const webLarekApi = new WebLarekApi(api);
 
 const catalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const basketCardTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
@@ -37,15 +38,13 @@ const orderForm = new OrderForm(cloneTemplate<HTMLFormElement>('#order'), events
 const contactsForm = new ContactsForm(cloneTemplate<HTMLFormElement>('#contacts'), events);
 const success = new Success(cloneTemplate('#success'), events);
 
-let isSubmitting = false;
-
 function getOrderState(): IOrderFormView {
     const data = buyerModel.getData();
     const errors = buyerModel.validate();
     return {
         payment: data.payment,
         address: data.address,
-        valid: !errors.payment && !errors.address && !isSubmitting,
+        valid: !errors.payment && !errors.address,
         errors: [errors.payment, errors.address].filter(Boolean).join('. '),
     };
 }
@@ -56,7 +55,7 @@ function getContactsState(): IContactsFormView {
     return {
         email: data.email,
         phone: data.phone,
-        valid: !errors.email && !errors.phone && !isSubmitting,
+        valid: !errors.email && !errors.phone,
         errors: [errors.email, errors.phone].filter(Boolean).join('. '),
     };
 }
@@ -72,7 +71,7 @@ function renderBasket(): HTMLElement {
     return basket.render({
         items,
         total: basketModel.getTotal(),
-        disabled: basketModel.getCount() === 0 || isSubmitting,
+        disabled: basketModel.getCount() === 0,
     });
 }
 
@@ -98,7 +97,6 @@ events.on(EVENTS.productsChanged, () => {
 });
 
 events.on<IProductEvent>(EVENTS.productSelect, ({ id }) => {
-    if (isSubmitting) return;
     const product = productsModel.getItem(id);
     if (product) productsModel.setSelectedProduct(product);
 });
@@ -119,9 +117,8 @@ events.on(EVENTS.productChanged, () => {
 });
 
 events.on(EVENTS.productToggle, () => {
-    if (isSubmitting) return;
     const product = productsModel.getSelectedProduct();
-    if (!product || product.price === null) return;
+    if (!product) return;
     if (basketModel.hasItem(product.id)) basketModel.removeItem(product);
     else basketModel.addItem(product);
     modal.close();
@@ -133,22 +130,20 @@ events.on(EVENTS.basketChanged, () => {
 });
 
 events.on(EVENTS.basketOpen, () => {
-    if (!isSubmitting) openModal(renderBasket());
+    openModal(basket.render());
 });
 
 events.on<IProductEvent>(EVENTS.basketRemove, ({ id }) => {
-    if (isSubmitting) return;
     const product = basketModel.getItems().find((item) => item.id === id);
     if (product) basketModel.removeItem(product);
 });
 
 events.on(EVENTS.orderOpen, () => {
-    if (isSubmitting || basketModel.getCount() === 0) return;
-    openModal(orderForm.render(getOrderState()));
+    openModal(orderForm.render());
 });
 
 events.on<Partial<IBuyer>>(EVENTS.buyerChange, (data) => {
-    if (!isSubmitting) buyerModel.setData(data);
+    buyerModel.setData(data);
 });
 
 events.on(EVENTS.buyerChanged, () => {
@@ -157,35 +152,25 @@ events.on(EVENTS.buyerChanged, () => {
 });
 
 events.on(EVENTS.orderNext, () => {
-    if (isSubmitting || basketModel.getCount() === 0) return;
-    const errors = buyerModel.validate();
-    if (errors.payment || errors.address) return;
-    openModal(contactsForm.render(getContactsState()));
+    openModal(contactsForm.render());
 });
 
 events.on(EVENTS.orderSubmit, () => {
-    if (isSubmitting || basketModel.getCount() === 0) return;
     const data = buyerModel.getData();
-    const errors = buyerModel.validate();
-    if (Object.keys(errors).length || data.payment === '') return;
     const order: IOrder = {
         ...data,
-        payment: data.payment,
+        payment: data.payment as IOrder['payment'],
         items: basketModel.getItems().map((product) => product.id),
         total: basketModel.getTotal(),
     };
-    isSubmitting = true;
     webLarekApi.orderProducts(order)
         .then((response) => {
-            isSubmitting = false;
             basketModel.clear();
             buyerModel.clear();
             openModal(success.render({ total: response.total }));
         })
         .catch((error: unknown) => {
-            isSubmitting = false;
             openModal(contactsForm.render({
-                ...getContactsState(),
                 errors: typeof error === 'string' ? error : 'Не удалось оформить заказ. Попробуйте ещё раз.',
             }));
         });
@@ -193,6 +178,9 @@ events.on(EVENTS.orderSubmit, () => {
 
 events.on(EVENTS.modalClose, () => modal.close());
 events.on(EVENTS.successClose, () => modal.close());
+
+basketModel.clear();
+buyerModel.clear();
 
 webLarekApi.getProducts()
     .then((response) => productsModel.setItems(response.items))

@@ -8,11 +8,11 @@ export class Header extends Component<IHeaderView> {
     protected basketButton: HTMLButtonElement;
     protected counter: HTMLElement;
 
-    constructor(container: HTMLElement, events: IEvents) {
+    constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
         this.basketButton = ensureElement<HTMLButtonElement>('.header__basket', container);
         this.counter = ensureElement('.header__basket-counter', container);
-        this.basketButton.addEventListener('click', () => events.emit(EVENTS.basketOpen));
+        this.basketButton.addEventListener('click', () => this.events.emit(EVENTS.basketOpen));
     }
 
     set count(value: number) {

@@ -8,11 +8,11 @@ export class Success extends Component<ISuccessView> {
     protected descriptionElement: HTMLElement;
     protected button: HTMLButtonElement;
 
-    constructor(container: HTMLElement, events: IEvents) {
+    constructor(container: HTMLElement, protected events: IEvents) {
         super(container);
         this.descriptionElement = ensureElement('.order-success__description', container);
         this.button = ensureElement<HTMLButtonElement>('.order-success__close', container);
-        this.button.addEventListener('click', () => events.emit(EVENTS.successClose));
+        this.button.addEventListener('click', () => this.events.emit(EVENTS.successClose));
     }
 
     set total(value: number) {

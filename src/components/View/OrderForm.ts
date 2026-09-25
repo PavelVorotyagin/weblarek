@@ -14,9 +14,9 @@ export class OrderForm extends Form<IOrderFormView> {
         this.addressInput = ensureElement<HTMLInputElement>('[name="address"]', container);
         this.cardButton = ensureElement<HTMLButtonElement>('[name="card"]', container);
         this.cashButton = ensureElement<HTMLButtonElement>('[name="cash"]', container);
-        this.addressInput.addEventListener('input', () => events.emit(EVENTS.buyerChange, { address: this.addressInput.value }));
-        this.cardButton.addEventListener('click', () => events.emit(EVENTS.buyerChange, { payment: 'card' }));
-        this.cashButton.addEventListener('click', () => events.emit(EVENTS.buyerChange, { payment: 'cash' }));
+        this.addressInput.addEventListener('input', () => this.events.emit(EVENTS.buyerChange, { address: this.addressInput.value }));
+        this.cardButton.addEventListener('click', () => this.events.emit(EVENTS.buyerChange, { payment: 'card' }));
+        this.cashButton.addEventListener('click', () => this.events.emit(EVENTS.buyerChange, { payment: 'cash' }));
     }
 
     set address(value: string) {

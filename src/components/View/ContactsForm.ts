@@ -12,8 +12,8 @@ export class ContactsForm extends Form<IContactsFormView> {
         super(container, events, EVENTS.orderSubmit);
         this.emailInput = ensureElement<HTMLInputElement>('[name="email"]', container);
         this.phoneInput = ensureElement<HTMLInputElement>('[name="phone"]', container);
-        this.emailInput.addEventListener('input', () => events.emit(EVENTS.buyerChange, { email: this.emailInput.value }));
-        this.phoneInput.addEventListener('input', () => events.emit(EVENTS.buyerChange, { phone: this.phoneInput.value }));
+        this.emailInput.addEventListener('input', () => this.events.emit(EVENTS.buyerChange, { email: this.emailInput.value }));
+        this.phoneInput.addEventListener('input', () => this.events.emit(EVENTS.buyerChange, { phone: this.phoneInput.value }));
     }
 
     set email(value: string) {

@@ -13,11 +13,12 @@
     overflow-y: auto;
   }
   
-  &__empty {
+  &__list:not(:has(> *))::before {
+    content: 'Корзина пуста';
     opacity: 0.3;
     display: block;
     text-align: left;
-    list-style: none;
+    font-style: regular;
     font-weight: 400;
   }
 
