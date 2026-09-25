@@ -3,7 +3,6 @@
 
 .modal {
   @include mixins.sublayer;
-  // height: max-content;
   display: none;
   justify-content: center;
   background-color: $overlayBackground;
@@ -21,7 +20,6 @@
     @include mixins.flex(column);
     gap: $defaultPadding;
     background-color: $background;
-    // min-height: 90vmin;
     border-radius: 3rem;
     box-sizing: border-box;
     position: relative;
@@ -66,5 +64,23 @@
     &_error {
       color: $error;
     }
+  }
+}
+
+@media (max-height: 820px) {
+  .modal .card_full {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .modal .card_full .card__image {
+    height: min(390px, 48vh);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .modal .order {
+    gap: 2rem;
+    margin-bottom: 2rem;
   }
 }

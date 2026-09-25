@@ -7,6 +7,10 @@
   gap: 1.5rem;
   border-radius: 3rem;
 
+  &__errors {
+    color: $error;
+  }
+
   &__label {
     flex-grow: 1;
   }

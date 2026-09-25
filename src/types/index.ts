@@ -40,3 +40,50 @@ export interface IOrderResponse {
     id: string;
     total: number;
 }
+
+export interface ICatalogView {
+    items: HTMLElement[];
+}
+
+export interface IHeaderView {
+    count: number;
+}
+
+export type TCardView = Pick<IProduct, 'title' | 'price' | 'category' | 'image'>;
+
+export interface IPreviewView extends TCardView {
+    description: IProduct['description'];
+    buttonText: string;
+    disabled: boolean;
+}
+
+export interface IBasketCardView extends Pick<IProduct, 'title' | 'price'> {
+    index: number;
+}
+
+export interface IBasketView {
+    items: HTMLElement[];
+    total: number;
+    disabled: boolean;
+}
+
+export interface IFormState {
+    valid: boolean;
+    errors: string;
+}
+
+export interface IOrderFormView extends IFormState, Pick<IBuyer, 'payment' | 'address'> {}
+
+export interface IContactsFormView extends IFormState, Pick<IBuyer, 'email' | 'phone'> {}
+
+export interface IModalView {
+    content: HTMLElement;
+}
+
+export interface ISuccessView {
+    total: IOrderResponse['total'];
+}
+
+export interface IProductEvent {
+    id: IProduct['id'];
+}

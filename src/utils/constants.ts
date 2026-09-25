@@ -20,3 +20,19 @@ export const settings = {
 
 };
 
+export const EVENTS = {
+  productsChanged: 'products:changed',
+  productChanged: 'product:changed',
+  basketChanged: 'basket:changed',
+  buyerChanged: 'buyer:changed',
+  productSelect: 'product:select',
+  productToggle: 'product:toggle',
+  basketRemove: 'basket:remove',
+  basketOpen: 'basket:open',
+  orderOpen: 'order:open',
+  orderNext: 'order:next',
+  orderSubmit: 'order:submit',
+  buyerChange: 'buyer:change',
+  modalClose: 'modal:close',
+  successClose: 'success:close',
+} as const;
